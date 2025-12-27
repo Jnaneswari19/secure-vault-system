@@ -1,0 +1,18 @@
+\que
+console.log("SecureVault deployed to:", await vault.getAddress());
+await vault.waitForDeployment();
+const vault = await SecureVault.deploy(await authManager.getAddress());
+const SecureVault = await hre.ethers.getContractFactory("SecureVault");
+console.log("AuthorizationManager deployed to:", await authManager.getAddress());
+await authManager.waitForDeployment();
+const authManager = await AuthManager.deploy();
+const AuthManager = await hre.ethers.getContractFactory("AuthorizationManager");
+const hre = await import("hardhat");
+console.log("SecureVault deployed to:", vault.address);
+await vault.deployed();
+const vault = await SecureVault.deploy(authManager.address);
+const SecureVault = await ethers.getContractFactory("SecureVault");
+console.log("AuthorizationManager deployed to:", authManager.address);
+await authManager.deployed();
+const authManager = await AuthManager.deploy();
+const AuthManager = await ethers.getContractFactory("AuthorizationManager");

@@ -1,0 +1,39 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_20-9e8bda63765c4b4ef0026fdfabe2aa6bcb2ca0d9",
+  "solcVersion": "0.8.20",
+  "solcLongVersion": "0.8.20+commit.a1b79de6",
+  "userSourceNameMap": {
+    "contracts/AuthorizationManager.sol": "project/contracts/AuthorizationManager.sol",
+    "contracts/SecureVault.sol": "project/contracts/SecureVault.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "shanghai",
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/AuthorizationManager.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.20;\r\n\r\n/// @title Authorization Manager\r\n/// @notice Validates withdrawal permissions and ensures each authorization is used only once\r\ncontract AuthorizationManager {\r\n    // Track used authorizations\r\n    mapping(bytes32 => bool) public usedAuthorizations;\r\n\r\n    // Event emitted when an authorization is consumed\r\n    event AuthorizationConsumed(bytes32 indexed authId);\r\n\r\n    /// @notice Validate an authorization request\r\n    /// @param authId Unique identifier for the authorization\r\n    /// @param vault Address of the vault contract\r\n    /// @param chainId Expected chain ID\r\n    /// @param recipient Address receiving funds\r\n    /// @param amount Amount to withdraw\r\n    /// @return True if validation passes\r\n    function validate(\r\n        bytes32 authId,\r\n        address vault,\r\n        uint256 chainId,\r\n        address recipient,\r\n        uint256 amount\r\n    ) external returns (bool) {\r\n        require(!usedAuthorizations[authId], \"Authorization already used\");\r\n        require(vault != address(0), \"Invalid vault\");\r\n        require(chainId == block.chainid, \"Wrong network\");\r\n        require(recipient != address(0), \"Invalid recipient\");\r\n        require(amount > 0, \"Invalid amount\");\r\n\r\n        usedAuthorizations[authId] = true;\r\n        emit AuthorizationConsumed(authId);\r\n        return true;\r\n    }\r\n}\r\n"
+      },
+      "project/contracts/SecureVault.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.20;\r\n\r\nimport \"./AuthorizationManager.sol\";\r\n\r\n/// @title Secure Vault\r\n/// @notice Holds funds and executes withdrawals only after authorization\r\ncontract SecureVault {\r\n    AuthorizationManager public authManager;\r\n    mapping(address => uint256) public balances;\r\n\r\n    event Deposit(address indexed sender, uint256 amount);\r\n    event Withdrawal(address indexed recipient, uint256 amount);\r\n\r\n    constructor(address _authManager) {\r\n        require(_authManager != address(0), \"Invalid manager\");\r\n        authManager = AuthorizationManager(_authManager);\r\n    }\r\n\r\n    /// @notice Accept deposits into the vault\r\n    receive() external payable {\r\n        balances[msg.sender] += msg.value;\r\n        emit Deposit(msg.sender, msg.value);\r\n    }\r\n\r\n    /// @notice Withdraw funds with authorization\r\n    /// @param authId Unique authorization ID\r\n    /// @param recipient Address receiving funds\r\n    /// @param amount Amount to withdraw\r\n    function withdraw(\r\n        bytes32 authId,\r\n        address recipient,\r\n        uint256 amount\r\n    ) external {\r\n        require(\r\n            authManager.validate(authId, address(this), block.chainid, recipient, amount),\r\n            \"Authorization failed\"\r\n        );\r\n        require(balances[msg.sender] >= amount, \"Insufficient balance\");\r\n\r\n        balances[msg.sender] -= amount;\r\n        payable(recipient).transfer(amount);\r\n\r\n        emit Withdrawal(recipient, amount);\r\n    }\r\n}\r\n"
+      }
+    }
+  }
+}
