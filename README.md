@@ -1,6 +1,12 @@
-# 🔐 Secure Vault System
-> A secure, event‑driven vault system demonstrating Solidity best practices, reproducible testing, and portfolio‑ready documentation.
 
+# 🔐 Secure Vault System
+
+![Release](https://img.shields.io/github/v/release/Jnaneswari19/secure-vault-system)
+![License](https://img.shields.io/github/license/Jnaneswari19/secure-vault-system)
+![Build](https://img.shields.io/badge/build-passing-brightgreen)
+![Hardhat](https://img.shields.io/badge/tested%20with-Hardhat-blue)
+
+> A secure, event‑driven vault system demonstrating Solidity best practices, reproducible testing, and portfolio‑ready documentation.  
 > A Solidity vault system showcasing secure authorization, event transparency, and reproducible testing.
 
 A Solidity-based **multi-tenant vault** with authorization management, built and tested using **Hardhat + ethers v5**.  
@@ -26,7 +32,14 @@ secure-vault-system/
 │   └── SecureVault.sol
 ├── test/
 │   └── system.spec.js
+├── docs/screenshots/
+│   ├── phase5-tests.png
+│   ├── phase6-tests.png
+│   └── deployment.png
 ├── hardhat.config.js
+├── docker-compose.yml
+├── Dockerfile
+├── .gitignore
 ├── package.json
 └── README.md
 ```
@@ -39,6 +52,8 @@ secure-vault-system/
 - ethers.js (v5.7.2)
 - Mocha/Chai for testing
 - @nomiclabs/hardhat-waffle (v2.0.6)
+- Node.js (v20.11.1)
+- Docker & Docker Compose
 
 ---
 
@@ -54,7 +69,6 @@ secure-vault-system/
    ```bash
    npm install
    ```
-   > Compatible with Node.js v20.11.1.
 
 3. **Compile contracts**  
    ```bash
@@ -64,6 +78,11 @@ secure-vault-system/
 4. **Run tests**  
    ```bash
    npx hardhat test
+   ```
+
+5. **Run with Docker**  
+   ```bash
+   docker-compose up --build
    ```
 
 ---
@@ -169,16 +188,18 @@ Feel free to fork this repo and submit a pull request.
 ---
 
 ## 🙏 Acknowledgements
-- OpenZeppelin for security patterns
-- Hardhat community for tooling and plugins
+- OpenZeppelin for security patterns  
+- Hardhat community for tooling and plugins  
 
 ---
 
 ## ✅ Status
 - Phase 5 complete (functional validation).  
 - Phase 6 complete (event validation).  
+- Visual proof screenshots committed.  
+- Release `v1.0.0` published.  
+- Repo description and topics added.  
 - Ready for portfolio submission with screenshots, documentation, and architecture diagram.
 ```
 
 ---
-
