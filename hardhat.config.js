@@ -1,8 +1,6 @@
-import "@nomicfoundation/hardhat-ethers";
+require("@nomiclabs/hardhat-ethers");
+require("@nomiclabs/hardhat-waffle"); // ✅ use this instead
 
-export default {
+module.exports = {
   solidity: "0.8.20",
-  paths: {
-    sources: "./contracts",
-  },
 };
